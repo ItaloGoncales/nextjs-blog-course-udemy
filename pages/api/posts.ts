@@ -30,7 +30,8 @@ const readPostsInfo = () => {
   const posts = files.map((file) => {
     const filePath = path.join(process.cwd(), "posts", file);
     const fileContent = fs.readFileSync(filePath, { encoding: "utf-8" });
-    return matter(fileContent).data;
+    const { data, content } = matter(fileContent);
+    return { ...data, content } as { [key: string]: any };
   });
 
   return posts;

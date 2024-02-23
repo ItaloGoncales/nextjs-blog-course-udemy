@@ -6,16 +6,20 @@ import {
   NextPage,
   PreviewData,
 } from "next";
-import { Post } from "../blogs";
 import { ParsedUrlQuery } from "querystring";
+import { MDXRemote } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
+import { Post } from ".";
 
 type BlogPageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const BlogPage: NextPage<BlogPageProps> = ({ post }) => {
   return (
-    <div>
-      <h1>{post.title}</h1>
-      <p>{post.meta}</p>
+    <div className="max-w-3xl mx-auto">
+      <h1 className="font-semibold text-2xl py-5">{post.title}</h1>
+      <div className="prose pb-20">
+        <MDXRemote {...post.content} />
+      </div>
     </div>
   );
 };
@@ -47,13 +51,14 @@ export const getStaticProps = async (
   const { params } = context;
   const { postSlug } = params as any;
 
-  const { title, meta } = (await getPosts(postSlug))[0];
+  const { title, meta, content } = (await getPosts(postSlug))[0];
 
   return {
     props: {
       post: {
         title,
-        meta,
+        meta: meta,
+        content: await serialize(content, { parseFrontmatter: true }),
       },
     },
   };

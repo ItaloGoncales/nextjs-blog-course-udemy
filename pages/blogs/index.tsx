@@ -4,6 +4,7 @@ import { InferGetStaticPropsType, NextPage } from "next";
 export interface Post {
   title: string;
   slug: string;
+  content: string;
   meta: string;
 }
 
